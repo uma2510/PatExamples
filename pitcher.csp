@@ -1,0 +1,18 @@
+hvar volume = [8, 5, 2];
+var pitcher = [8,0,0];
+
+P(i,j) = 
+	[pitcher[i] != 0 && pitcher[i] + pitcher[j] <= volume[j]] empty.i.j {
+		pitcher[j] = pitcher[j] + pitcher[i];
+		pitcher[i] = 0;
+	} -> Q()
+ [] [pitcher[j] != volume[j] && pitcher[i] + pitcher[j] > volume[j]] fill.i.j {
+		pitcher[i] = pitcher[i] - (volume[j] - pitcher[j]);
+		pitcher[j] = volume[j];
+	} -> Q()
+	;
+
+Q() = P(0,1) [] P(0,2) [] P(1,0) [] P(1,2) [] P(2,0) [] P(2,1);
+
+#define goal pitcher[2] == 1 || pitcher[1] == 1 || pitcher[0] == 1;
+#assert Q() reaches goal;
